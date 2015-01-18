@@ -110,7 +110,7 @@ void input_png_file(struct Options opts, struct PNGImage *img) {
 			/* Eventually when this copies colors from the image itself, make sure order is lightest to darkest. */
 			palette = malloc(sizeof(png_color) * colors);
 
-			if(strequ(opts.infile, "../rgbgfx_test/rgb.png")) {
+			if(strequ(opts.infile, "rgb.png")) {
 				palette[0].red   = 0xFF;
 				palette[0].green = 0xEF;
 				palette[0].blue  = 0xFF;
