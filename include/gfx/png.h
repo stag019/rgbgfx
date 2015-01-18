@@ -17,7 +17,7 @@
 #ifndef RGBDS_GFX_PNG_H
 #define RGBDS_GFX_PNG_H
 
-void input_png_file(struct Options opts, struct GBImage gb, struct PNGImage *img);
+void input_png_file(struct Options opts, struct PNGImage *img);
 /* Variables bool verbose, char *infile are for debugging purposes and should be removed in the final product. */
 void get_text(struct PNGImage *png, bool verbose, char *infile);
 void set_text(struct PNGImage *png);

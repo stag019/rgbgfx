@@ -83,7 +83,7 @@ int main(int argc, char *argv[]) {
 
 	opts.infile = argv[argc - 1];
 
-	input_png_file(opts, gb, &png);
+	input_png_file(opts, &png);
 
 	png.mapfile = "";
 	png.palfile = "";
@@ -190,9 +190,9 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
+	gb.depth = (opts.binary ? 1 : 2);
 	gb.size = png.width * png.height / (4 * (3 - gb.depth));
 	gb.data = calloc(gb.size, 1);
-	gb.depth = (opts.binary ? 1 : 2);
 	gb.trim = opts.trim;
 	gb.horizontal = opts.horizontal;
 

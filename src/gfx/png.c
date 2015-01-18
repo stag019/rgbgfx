@@ -16,16 +16,17 @@
 
 #include "gfx/main.h"
 
-void input_png_file(struct Options opts, struct GBImage gb, struct PNGImage *img) {
+void input_png_file(struct Options opts, struct PNGImage *img) {
 	FILE *f;
-	int i, y, num_trans, colors;
+	int i, y, num_trans, depth, colors;
 	bool has_palette;
 	png_byte *trans_alpha;
 	png_color_16 *trans_values;
 	bool *full_alpha;
 	png_color *palette;
 
-	colors = gb.depth * gb.depth;
+	depth = (opts.binary ? 1 : 2);
+	colors = depth * depth;
 
 	f = fopen(opts.infile, "rb");
 	if(!f) {
@@ -60,9 +61,9 @@ void input_png_file(struct Options opts, struct GBImage gb, struct PNGImage *img
 		png_set_strip_alpha(img->png);
 	}
 
-	if(img->depth != gb.depth) {
+	if(img->depth != depth) {
 		if(opts.verbose) {
-			warnx("Image bit depth is not %i.", gb.depth);
+			warnx("Image bit depth is not %i.", depth);
 		}
 
 		if(img->type == PNG_COLOR_TYPE_GRAY) {
