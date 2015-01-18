@@ -1,0 +1,98 @@
+.Dd $Mdocdate$
+.Dt RGBGFX 1
+.Os RGBDS Manual
+.Sh NAME
+.Nm rgbgfx
+.Nd Game Boy graphics converter
+.Sh SYNOPSIS
+.Nm rgbgfx
+.Op Fl vFfbh
+.Op Fl x Ar tiles
+.Op Fl t Ar mapfile
+.Op Fl T
+.Op Fl p Ar palfile
+.Op Fl P
+.Op Fl o Ar outfile
+.Ar file
+.Sh DESCRIPTION
+The
+.Nm
+program converts PNG images into the Nintendo Game Boy's planar tile format.
+The arguments are as follows:
+.Bl -tag -width Ds
+.It Fl v
+Print errors when the command line parameters and the parameters in the PNG
+file don't match.
+.It Fl F
+Fix the input PNG file to have its parameters match the command line's
+parameters.
+.It Fl f
+Fix the input PNG file to be a correctly indexed image.
+.It Fl b
+The output file is to be a binary (one bit per pixel) image.
+By default, the output file is two bits per pixel.
+.It Fl h
+Lay out tiles horizontally rather than vertically.
+.It Fl x Ar tiles
+Trim the end of the output file by this many tiles.
+.It Fl t Ar mapfile
+If any tiles are the same, don't place the repeat tiles in the output file, and
+make a tilemap file.
+.It Fl T
+Same as
+.Fl t ,
+but the tilemap file output name is made by taking the output filename,
+removing the file extension, and appending
+.Pa .tilemap .
+.It Fl p Ar palfile
+Raw bytes (8 bytes for two bits per pixel, 4 bytes for one bit per pixel)
+containing the RGB15 values in the little-endian byte order and then ordered
+from lightest to darkest.
+.It Fl P
+Same as
+.Fl p ,
+but the pallete file output name is made by taking the output filename,
+removing the file extension, and appending
+.Pa .pal .
+.It Fl o Ar outfile
+The name of the output two bits per pixel, or one bit per pixel file.
+.El
+.Sh EXAMPLES
+Most values in the ROM header are only cosmetic.
+The bare minimum requirements for a workable image are checksums, the Nintendo
+logo, and (if needed) the CGB/SGB flags.
+It is a good idea to pad the image to a valid size as well
+.Pq Do valid Dc meaning a multiple of 32KiB .
+.Pp
+The following will make a plain, no-color Game Boy game without checking for
+a valid size:
+.Pp
+.D1 $ rgbfix \-v foo.gb
+.Pp
+The following will make a SGB-enabled, color-enabled game with a title of
+.Dq foobar ,
+and pad it to a multiple of 32KiB.
+.Po
+The Game Boy itself does not use the title, but some emulators or ROM managers
+might.
+.Pc
+.Pp
+.D1 $ rgbfix \-vcs \-l 0x33 \-p 0 \-t foobar baz.gb
+.Pp
+The following will duplicate the header
+.Pq sans global checksum
+of the game
+.Dq Survival Kids :
+.Pp
+.D1 $ rgbfix \-cjsv \-k A4 \-l 0x33 \-m 0x1B \-p 0xFF \-r 3 \-t SURVIVALKIDAVKE SurvivalKids.gbc
+.Sh SEE ALSO
+.Xr rgbds 7 ,
+.Xr rgbasm 1 ,
+.Xr rgblink 1 ,
+.Xr rgbfix 1 ,
+.Xr gbz80 7
+.Sh HISTORY
+.Nm
+was created by
+.An stag019
+to be included in RGBDS.

@@ -1,0 +1,13 @@
+----------------
+  RGBGFX README
+----------------
+
+RGBDS (Rednex Game Boy Development System) is a free assembler/linker package
+for the Game Boy and Game Boy Color. It consists of:
+
+  - rgbasm  (assembler)
+  - rgblink (linker)
+  - rgbfix  (checksum/header fixer)
+
+rgbgfx is a program which converts PNG images into the Game Boy's planar tile
+format, for eventual integration into RGBDS.
