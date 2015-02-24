@@ -293,7 +293,9 @@ void output_png_file(struct Options opts, struct PNGImage *png) {
 
 	fclose(f);
 
-	free(outfile);
+	if(opts.debug) {
+		free(outfile);
+	}
 }
 
 void free_png_data(struct PNGImage *png) {
