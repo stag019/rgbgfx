@@ -172,29 +172,29 @@ int main(int argc, char *argv[]) {
 	}
 
 	if(!*opts.mapfile && opts.mapout) {
-		if((ext = strrchr(opts.outfile, '.')) != NULL) {
-			size = ext - opts.outfile + 9;
+		if((ext = strrchr(opts.infile, '.')) != NULL) {
+			size = ext - opts.infile + 9;
 			opts.mapfile = malloc(size);
-			strncpy(opts.mapfile, opts.outfile, size);
+			strncpy(opts.mapfile, opts.infile, size);
 			*strrchr(opts.mapfile, '.') = '\0';
 			strcat(opts.mapfile, ".tilemap");
 		} else {
-			opts.mapfile = malloc(strlen(opts.outfile) + 9);
-			strcpy(opts.mapfile, opts.outfile);
+			opts.mapfile = malloc(strlen(opts.infile) + 9);
+			strcpy(opts.mapfile, opts.infile);
 			strcat(opts.mapfile, ".tilemap");
 		}
 	}
 
 	if(!*opts.palfile && opts.palout) {
-		if((ext = strrchr(opts.outfile, '.')) != NULL) {
-			size = ext - opts.outfile + 5;
+		if((ext = strrchr(opts.infile, '.')) != NULL) {
+			size = ext - opts.infile + 5;
 			opts.palfile = malloc(size);
-			strncpy(opts.palfile, opts.outfile, size);
+			strncpy(opts.palfile, opts.infile, size);
 			*strrchr(opts.palfile, '.') = '\0';
 			strcat(opts.palfile, ".pal");
 		} else {
-			opts.palfile = malloc(strlen(opts.outfile) + 5);
-			strcpy(opts.palfile, opts.outfile);
+			opts.palfile = malloc(strlen(opts.infile) + 5);
+			strcpy(opts.palfile, opts.infile);
 			strcat(opts.palfile, ".pal");
 		}
 	}
@@ -205,9 +205,10 @@ int main(int argc, char *argv[]) {
 	gb.trim = opts.trim;
 	gb.horizontal = opts.horizontal;
 
-	png_to_gb(png, &gb);
-
-	output_file(opts, gb);
+	if(*opts.outfile) {
+		png_to_gb(png, &gb);
+		output_file(opts, gb);
+	}
 
 	if(*opts.mapfile) {
 		output_tilemap_file(opts);
