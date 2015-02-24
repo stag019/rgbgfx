@@ -113,6 +113,9 @@ int main(int argc, char *argv[]) {
 	if(png.trim) {
 		opts.trim = png.trim;
 	}
+	if(opts.trim > png.width / 8 - 1) {
+		errx(EXIT_FAILURE, "Trim for input png file '%s' too large", opts.infile);
+	}
 
 	if(!strequ(png.mapfile, opts.mapfile)) {
 		if(opts.verbose) {
