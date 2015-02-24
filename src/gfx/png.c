@@ -169,16 +169,12 @@ void input_png_file(struct Options opts, struct PNGImage *img) {
 	fclose(f);
 }
 
-void get_text(struct PNGImage *png, bool verbose, char *infile) {
+void get_text(struct PNGImage *png) {
 	png_text *text;
 	int i, numtxts, numremoved;
 
 	png_get_text(png->png, png->info, &text, &numtxts);
 	for(i = 0; i < numtxts; i++) {
-		/* This is for myself for debugging; it should be removed in final product. */
-		if(verbose) {
-			printf("%s: %s => %s\n", infile, text[i].key, text[i].text);
-		}
 		if(strequ(text[i].key, "h") && !*text[i].text) {
 			png->horizontal = true;
 			png_free_data(png->png, png->info, PNG_FREE_TEXT, i);
@@ -265,9 +261,13 @@ void output_png_file(struct Options opts, struct PNGImage *png) {
 	png_struct *img;
 
 	/* Variable outfile is for debugging purposes. Eventually, opts.infile will be used directly. */
-	outfile = malloc(strlen(opts.infile) + 5);
-	strcpy(outfile, opts.infile);
-	strcat(outfile, ".out");
+	if(opts.debug) {
+		outfile = malloc(strlen(opts.infile) + 5);
+		strcpy(outfile, opts.infile);
+		strcat(outfile, ".out");
+	} else {
+		outfile = opts.infile;
+	}
 
 	f = fopen(outfile, "wb");
 	if(!f) {

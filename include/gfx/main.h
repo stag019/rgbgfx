@@ -30,6 +30,7 @@
 #define strequ(str1, str2) (strcmp(str1, str2) == 0)
 
 struct Options {
+	bool debug;
 	bool verbose;
 	bool hardfix;
 	bool fix;

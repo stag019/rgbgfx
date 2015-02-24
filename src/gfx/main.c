@@ -17,7 +17,10 @@
 #include "gfx/main.h"
 
 static void usage(void) {
-	errx(EXIT_FAILURE, "Usage: rgbgfx [-v] [-F] [-f] [-b] [-h] [-x #] [-t mapfile] [-T] [-p palfile] [-P] [-o outfile] infile\n");
+	printf(
+"Usage: rgbgfx [-v] [-F] [-f] [-b] [-h] [-x #] [-t mapfile] [-T] [-p palfile]\n"
+"              [-P] [-o outfile] infile\n");
+	exit(1);
 }
 
 int main(int argc, char *argv[]) {
@@ -36,8 +39,11 @@ int main(int argc, char *argv[]) {
 	opts.palfile = "";
 	opts.outfile = "";
 
-	while((ch = getopt(argc, argv, "vFfbhx:Tt:Pp:o:")) != -1) {
+	while((ch = getopt(argc, argv, "DvFfbhx:Tt:Pp:o:")) != -1) {
 		switch(ch) {
+		case 'D':
+			opts.debug = true;
+			break;
 		case 'v':
 			opts.verbose = true;
 			break;
@@ -88,7 +94,7 @@ int main(int argc, char *argv[]) {
 	png.mapfile = "";
 	png.palfile = "";
 
-	get_text(&png, opts.verbose, opts.infile);
+	get_text(&png);
 
 	if(png.horizontal != opts.horizontal) {
 		if(opts.verbose) {
@@ -211,8 +217,7 @@ int main(int argc, char *argv[]) {
 		output_palette_file(opts, png);
 	}
 
-	/* This is for debugging purposes and should be removed in the final product. */
-	if(opts.fix || true) {
+	if(opts.fix || opts.debug) {
 		set_text(&png);
 		output_png_file(opts, &png);
 	}
