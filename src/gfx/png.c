@@ -194,18 +194,18 @@ void get_text(struct PNGImage *png) {
 			png->palout = true;
 			png_free_data(png->png, png->info, PNG_FREE_TEXT, i);
 		}
-
-		/* TODO: Remove this and simply change the warning function not to warn instead. */
-		for(i = 0, numremoved = 0; i < numtxts; i++) {
-			if(text[i].key == NULL) {
-				numremoved++;
-			}
-			text[i].key = text[i + numremoved].key;
-			text[i].text = text[i + numremoved].text;
-			text[i].compression = text[i + numremoved].compression;
-		}
-		png->info->num_text -= numremoved;
 	}
+
+	/* TODO: Remove this and simply change the warning function not to warn instead. */
+	for(i = 0, numremoved = 0; i < numtxts; i++) {
+		if(text[i].key == NULL) {
+			numremoved++;
+		}
+		text[i].key = text[i + numremoved].key;
+		text[i].text = text[i + numremoved].text;
+		text[i].compression = text[i + numremoved].compression;
+	}
+	png->info->num_text -= numremoved;
 }
 
 void set_text(struct PNGImage *png) {
