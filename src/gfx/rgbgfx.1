@@ -6,13 +6,11 @@
 .Nd Game Boy graphics converter
 .Sh SYNOPSIS
 .Nm rgbgfx
-.Op Fl vFfbh
-.Op Fl x Ar tiles
-.Op Fl t Ar mapfile
-.Op Fl T
-.Op Fl p Ar palfile
-.Op Fl P
+.Op Fl bfFhPTv
 .Op Fl o Ar outfile
+.Op Fl p Ar palfile
+.Op Fl t Ar mapfile
+.Op Fl x Ar tiles
 .Ar file
 .Sh DESCRIPTION
 The
@@ -20,30 +18,20 @@ The
 program converts PNG images into the Nintendo Game Boy's planar tile format.
 The arguments are as follows:
 .Bl -tag -width Ds
-.It Fl v
-Print errors when the command line parameters and the parameters in the PNG
-file don't match.
-.It Fl F
-Fix the input PNG file to have its parameters match the command line's
-parameters.
-.It Fl f
-Fix the input PNG file to be a correctly indexed image.
 .It Fl b
 The output file is to be a binary (one bit per pixel) image.
 By default, the output file is two bits per pixel.
+.It Fl f
+Fix the input PNG file to be a correctly indexed image.
+.It Fl F
+Same as
+.Fl f ,
+but additionally, the input PNG file is fixed to have its parameters match the
+command line's parameters.
 .It Fl h
 Lay out tiles horizontally rather than vertically.
-.It Fl x Ar tiles
-Trim the end of the output file by this many tiles.
-.It Fl t Ar mapfile
-If any tiles are the same, don't place the repeat tiles in the output file, and
-make a tilemap file.
-.It Fl T
-Same as
-.Fl t ,
-but the tilemap file output name is made by taking the input filename,
-removing the file extension, and appending
-.Pa .tilemap .
+.It Fl o Ar outfile
+The name of the output two bits per pixel, or one bit per pixel file.
 .It Fl p Ar palfile
 Raw bytes (8 bytes for two bits per pixel, 4 bytes for one bit per pixel)
 containing the RGB15 values in the little-endian byte order and then ordered
@@ -54,8 +42,20 @@ Same as
 but the pallete file output name is made by taking the input filename,
 removing the file extension, and appending
 .Pa .pal .
-.It Fl o Ar outfile
-The name of the output two bits per pixel, or one bit per pixel file.
+.It Fl t Ar mapfile
+If any tiles are the same, don't place the repeat tiles in the output file, and
+make a tilemap file.
+.It Fl T
+Same as
+.Fl t ,
+but the tilemap file output name is made by taking the input filename,
+removing the file extension, and appending
+.Pa .tilemap .
+.It Fl v
+Print errors when the command line parameters and the parameters in the PNG
+file don't match.
+.It Fl x Ar tiles
+Trim the end of the output file by this many tiles.
 .El
 .Sh EXAMPLES
 Most values in the ROM header are only cosmetic.
