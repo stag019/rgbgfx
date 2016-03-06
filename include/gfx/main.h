@@ -34,7 +34,6 @@ struct Options {
 	bool verbose;
 	bool hardfix;
 	bool fix;
-	bool binary;
 	bool horizontal;
 	int trim;
 	char *mapfile;
@@ -64,10 +63,11 @@ struct PNGImage {
 struct GBImage {
 	uint8_t *data;
 	int size;
-	int depth;
 	bool horizontal;
 	int trim;
 };
+
+int depth, colors;
 
 #include "gfx/png.h"
 #include "gfx/gb.h"

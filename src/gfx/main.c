@@ -18,7 +18,7 @@
 
 static void usage(void) {
 	printf(
-"Usage: rgbgfx [-v] [-F] [-f] [-b] [-h] [-x #] [-t mapfile] [-T] [-p palfile]\n"
+"Usage: rgbgfx [-v] [-F] [-f] [-h] [-d #] [-x #] [-t mapfile] [-T] [-p palfile]\n"
 "              [-P] [-o outfile] infile\n");
 	exit(1);
 }
@@ -39,7 +39,9 @@ int main(int argc, char *argv[]) {
 	opts.palfile = "";
 	opts.outfile = "";
 
-	while((ch = getopt(argc, argv, "DvFfbhx:Tt:Pp:o:")) != -1) {
+	depth = 2;
+
+	while((ch = getopt(argc, argv, "DvFfd:hx:Tt:Pp:o:")) != -1) {
 		switch(ch) {
 		case 'D':
 			opts.debug = true;
@@ -52,8 +54,8 @@ int main(int argc, char *argv[]) {
 		case 'f':
 			opts.fix = true;
 			break;
-		case 'b':
-			opts.binary = true;
+		case 'd':
+			depth = strtoul(optarg, NULL, 0);
 			break;
 		case 'h':
 			opts.horizontal = true;
@@ -88,6 +90,11 @@ int main(int argc, char *argv[]) {
 	}
 
 	opts.infile = argv[argc - 1];
+
+	if(depth != 1 && depth != 2) {
+		errx(EXIT_FAILURE, "Depth option must be other 1 or 2.");
+	}
+	colors = (depth == 1 ? 2 : depth * depth);
 
 	input_png_file(opts, &png);
 
@@ -199,8 +206,7 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
-	gb.depth = (opts.binary ? 1 : 2);
-	gb.size = png.width * png.height * gb.depth / 8;
+	gb.size = png.width * png.height * depth / 8;
 	gb.data = calloc(gb.size, 1);
 	gb.trim = opts.trim;
 	gb.horizontal = opts.horizontal;

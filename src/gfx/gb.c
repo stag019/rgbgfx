@@ -23,8 +23,8 @@ void transpose_tiles(struct GBImage *gb, int width) {
 
 	newdata = calloc(gb->size, 1);
 	for(i = 0; i < gb->size; i++) {
-		newbyte = i / (8 * gb->depth) * width * 8 * gb->depth;
-		newbyte = newbyte % gb->size + 8 * gb->depth * (newbyte / gb->size) + i % (8 * gb->depth);
+		newbyte = i / (8 * depth) * width * 8 * depth;
+		newbyte = newbyte % gb->size + 8 * depth * (newbyte / gb->size) + i % (8 * depth);
 		newdata[newbyte] = gb->data[i];
 	}
 
@@ -40,17 +40,17 @@ void png_to_gb(struct PNGImage png, struct GBImage *gb) {
 	for(y = 0; y < png.height; y++) {
 		row = png.data[y];
 		for(x = 0; x < png.width; x++) {
-			index = row[x * gb->depth / 8] >> (8 - gb->depth - ((x % (8 / gb->depth)) * gb->depth)) & 3;
+			index = row[x * depth / 8] >> (8 - depth - ((x % (8 / depth)) * depth)) & 3;
 			if(png.type == PNG_COLOR_TYPE_GRAY) {
-				index = (gb->depth == 2 ? 3 : 1) - index;
+				index = (depth == 2 ? 3 : 1) - index;
 			}
 			if(!gb->horizontal) {
-				byte = y * gb->depth + x / 8 * png.height / 8 * 8 * gb->depth;
+				byte = y * depth + x / 8 * png.height / 8 * 8 * depth;
 			} else {
-				byte = y * gb->depth + x / 8 * png.height / 8 * 8 * gb->depth;
+				byte = y * depth + x / 8 * png.height / 8 * 8 * depth;
 			}
 			gb->data[byte] |= (index & 1) << (7 - x % 8);
-			if(gb->depth > 1) {
+			if(depth > 1) {
 				gb->data[byte + 1] |= (index >> 1) << (7 - x % 8);
 			}
 		}
@@ -68,7 +68,7 @@ void output_file(struct Options opts, struct GBImage gb) {
 	if(!f) {
 		err(EXIT_FAILURE, "Opening output file '%s' failed", opts.outfile);
 	}
-	fwrite(gb.data, 1, gb.size - gb.trim * 8 * gb.depth, f);
+	fwrite(gb.data, 1, gb.size - gb.trim * 8 * depth, f);
 
 	fclose(f);
 }

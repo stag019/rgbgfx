@@ -18,15 +18,12 @@
 
 void input_png_file(struct Options opts, struct PNGImage *img) {
 	FILE *f;
-	int i, y, num_trans, depth, colors;
+	int i, y, num_trans;
 	bool has_palette;
 	png_byte *trans_alpha;
 	png_color_16 *trans_values;
 	bool *full_alpha;
 	png_color *palette;
-
-	depth = (opts.binary ? 1 : 2);
-	colors = depth * depth;
 
 	f = fopen(opts.infile, "rb");
 	if(!f) {
