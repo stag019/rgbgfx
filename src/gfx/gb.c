@@ -42,7 +42,7 @@ void png_to_gb(struct PNGImage png, struct GBImage *gb) {
 		for(x = 0; x < png.width; x++) {
 			index = row[x * depth / 8] >> (8 - depth - ((x % (8 / depth)) * depth)) & 3;
 			if(png.type == PNG_COLOR_TYPE_GRAY) {
-				index = (depth == 2 ? 3 : 1) - index;
+				index = colors - 1 - index;
 			}
 			if(!gb->horizontal) {
 				byte = y * depth + x / 8 * png.height / 8 * 8 * depth;
@@ -50,7 +50,7 @@ void png_to_gb(struct PNGImage png, struct GBImage *gb) {
 				byte = y * depth + x / 8 * png.height / 8 * 8 * depth;
 			}
 			gb->data[byte] |= (index & 1) << (7 - x % 8);
-			if(depth > 1) {
+			if(depth == 2) {
 				gb->data[byte + 1] |= (index >> 1) << (7 - x % 8);
 			}
 		}
