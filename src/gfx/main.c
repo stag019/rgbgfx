@@ -200,7 +200,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	gb.depth = (opts.binary ? 1 : 2);
-	gb.size = png.width * png.height / (4 * (3 - gb.depth));
+	gb.size = png.width * png.height * gb.depth / 8;
 	gb.data = calloc(gb.size, 1);
 	gb.trim = opts.trim;
 	gb.horizontal = opts.horizontal;
