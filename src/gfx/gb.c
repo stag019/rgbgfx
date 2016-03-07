@@ -35,12 +35,11 @@ void transpose_tiles(struct GBImage *gb, int width) {
 
 void png_to_gb(struct PNGImage png, struct GBImage *gb) {
 	int x, y, byte;
-	png_byte *row, index;
+	png_byte index;
 
 	for(y = 0; y < png.height; y++) {
-		row = png.data[y];
 		for(x = 0; x < png.width; x++) {
-			index = row[x * depth / 8] >> (8 - depth - ((x % (8 / depth)) * depth)) & 3;
+			index = png.data[y][x * depth / 8] >> (8 - depth - ((x % (8 / depth)) * depth)) & 3;
 			if(png.type == PNG_COLOR_TYPE_GRAY) {
 				index = colors - 1 - index;
 			}
