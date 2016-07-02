@@ -94,7 +94,7 @@ int main(int argc, char *argv[]) {
 	if(depth != 1 && depth != 2) {
 		errx(EXIT_FAILURE, "Depth option must be other 1 or 2.");
 	}
-	colors = (depth == 1 ? 2 : depth * depth);
+	colors = 1 << depth;
 
 	input_png_file(opts, &png);
 
