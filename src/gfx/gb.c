@@ -39,7 +39,14 @@ void png_to_gb(struct PNGImage png, struct GBImage *gb) {
 
 	for(y = 0; y < png.height; y++) {
 		for(x = 0; x < png.width; x++) {
-			index = png.data[y][x * depth / 8] >> (8 - depth - ((x % (8 / depth)) * depth)) & 3;
+			if (png.depth == 1) {
+				index = png.data[y][x];
+			} else {
+				index = png.data[y][(x * png.depth) / 8];
+				index >>= (8 - png.depth - ((x % (8 / png.depth)) * depth));
+			}
+			index &= (1 << depth) - 1;
+
 			if(png.type == PNG_COLOR_TYPE_GRAY) {
 				index = colors - 1 - index;
 			}
