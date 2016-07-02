@@ -60,7 +60,7 @@ void input_png_file(struct Options opts, struct PNGImage *img) {
 
 	if(img->depth != depth) {
 		if(opts.verbose) {
-			warnx("Image bit depth is not %i.", depth);
+			warnx("Image bit depth is not %i (is %i).", depth, img->depth);
 		}
 
 		if(img->type == PNG_COLOR_TYPE_GRAY) {
