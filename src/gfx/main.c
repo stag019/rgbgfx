@@ -92,7 +92,7 @@ int main(int argc, char *argv[]) {
 	opts.infile = argv[argc - 1];
 
 	if(depth != 1 && depth != 2) {
-		errx(EXIT_FAILURE, "Depth option must be other 1 or 2.");
+		errx(EXIT_FAILURE, "Depth option must be either 1 or 2.");
 	}
 	colors = 1 << depth;
 
@@ -156,7 +156,7 @@ int main(int argc, char *argv[]) {
 
 	if(!strequ(png.palfile, opts.palfile)) {
 		if(opts.verbose) {
-			warnx(errmsg, "pallette file");
+			warnx(errmsg, "palette file");
 		}
 		if(opts.hardfix) {
 			png.palfile = opts.palfile;
@@ -168,7 +168,7 @@ int main(int argc, char *argv[]) {
 
 	if(png.palout != opts.palout) {
 		if(opts.verbose) {
-			warnx(errmsg, "pallette file");
+			warnx(errmsg, "palette file");
 		}
 		if(opts.hardfix) {
 			png.palout = opts.palout;
