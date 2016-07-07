@@ -18,8 +18,8 @@
 
 static void usage(void) {
 	printf(
-"Usage: rgbgfx [-v] [-F] [-f] [-h] [-d #] [-x #] [-t mapfile] [-T] [-p palfile]\n"
-"              [-P] [-o outfile] infile\n");
+"Usage: rgbgfx [-D] [-v] [-F] [-f] [-d #] [-h] [-x #] [-t mapfile] [-T]\n"
+"              [-p palfile] [-P] [-o outfile] infile\n");
 	exit(1);
 }
 

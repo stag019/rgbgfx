@@ -6,8 +6,9 @@
 .Nd Game Boy graphics converter
 .Sh SYNOPSIS
 .Nm rgbgfx
-.Op Fl bfFhPTv
+.Op Fl DfFhPTv
 .Op Fl o Ar outfile
+.Op Fl d Ar depth
 .Op Fl p Ar palfile
 .Op Fl t Ar mapfile
 .Op Fl x Ar tiles
@@ -18,9 +19,8 @@ The
 program converts PNG images into the Nintendo Game Boy's planar tile format.
 The arguments are as follows:
 .Bl -tag -width Ds
-.It Fl b
-The output file is to be a binary (one bit per pixel) image.
-By default, the output file is two bits per pixel.
+.It Fl D
+Debug features are enabled.
 .It Fl f
 Fix the input PNG file to be a correctly indexed image.
 .It Fl F
@@ -28,10 +28,13 @@ Same as
 .Fl f ,
 but additionally, the input PNG file is fixed to have its parameters match the
 command line's parameters.
+.It Fl d Ar depth
+The bitdepth of the output image (either 1 or 2).
+By default, the bitdepth is 2 (two bits per pixel).
 .It Fl h
 Lay out tiles horizontally rather than vertically.
 .It Fl o Ar outfile
-The name of the output two bits per pixel, or one bit per pixel file.
+The name of the output file.
 .It Fl p Ar palfile
 Raw bytes (8 bytes for two bits per pixel, 4 bytes for one bit per pixel)
 containing the RGB15 values in the little-endian byte order and then ordered
@@ -52,39 +55,21 @@ but the tilemap file output name is made by taking the input filename,
 removing the file extension, and appending
 .Pa .tilemap .
 .It Fl v
-Print errors when the command line parameters and the parameters in the PNG
-file don't match.
+Verbose.
+Print errors when the command line parameters and the parameters in
+the PNG file don't match.
 .It Fl x Ar tiles
 Trim the end of the output file by this many tiles.
 .El
 .Sh EXAMPLES
-Most values in the ROM header are only cosmetic.
-The bare minimum requirements for a workable image are checksums, the Nintendo
-logo, and (if needed) the CGB/SGB flags.
-It is a good idea to pad the image to a valid size as well
-.Pq Do valid Dc meaning a multiple of 32KiB .
+The following will take a PNG file with a bitdepth of 1, 2, or 8, and output
+planar 2bpp data:
 .Pp
-The following will make a plain, no-color Game Boy game without checking for
-a valid size:
+.D1 $ rgbgfx -o out.2bpp in.png
 .Pp
-.D1 $ rgbfix \-v foo.gb
+The following will do nothing:
 .Pp
-The following will make a SGB-enabled, color-enabled game with a title of
-.Dq foobar ,
-and pad it to a multiple of 32KiB.
-.Po
-The Game Boy itself does not use the title, but some emulators or ROM managers
-might.
-.Pc
-.Pp
-.D1 $ rgbfix \-vcs \-l 0x33 \-p 0 \-t foobar baz.gb
-.Pp
-The following will duplicate the header
-.Pq sans global checksum
-of the game
-.Dq Survival Kids :
-.Pp
-.D1 $ rgbfix \-cjsv \-k A4 \-l 0x33 \-m 0x1B \-p 0xFF \-r 3 \-t SURVIVALKIDAVKE SurvivalKids.gbc
+.D1 $ rgbgfx in.png
 .Sh SEE ALSO
 .Xr rgbds 7 ,
 .Xr rgbasm 1 ,
