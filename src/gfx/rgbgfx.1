@@ -54,6 +54,8 @@ Same as
 but the tilemap file output name is made by taking the input filename,
 removing the file extension, and appending
 .Pa .tilemap .
+.It Fl u
+Truncate repeated tiles. Useful with tilemaps.
 .It Fl v
 Verbose.
 Print errors when the command line parameters and the parameters in
@@ -66,6 +68,11 @@ The following will take a PNG file with a bitdepth of 1, 2, or 8, and output
 planar 2bpp data:
 .Pp
 .D1 $ rgbgfx -o out.2bpp in.png
+.Pp
+The following creates a planar 2bpp file with only unique tiles, and its tilemap
+.Pa out.tilemap :
+.Pp
+.D1 $ rgbgfx -T -u -o out.2bpp in.png
 .Pp
 The following will do nothing:
 .Pp
