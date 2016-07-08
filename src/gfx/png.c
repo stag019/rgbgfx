@@ -71,6 +71,9 @@ void input_png_file(struct Options opts, struct PNGImage *img) {
 			}
 			png_set_gray_to_rgb(img->png);
 		} else {
+			if(img->depth < 8) {
+				png_set_expand_gray_1_2_4_to_8(img->png);
+			}
 			has_palette = png_get_PLTE(img->png, img->info, &palette, &colors);
 		}
 
