@@ -40,7 +40,7 @@ void png_to_gb(struct PNGImage png, struct GBImage *gb) {
 	for(y = 0; y < png.height; y++) {
 		for(x = 0; x < png.width; x++) {
 			index = png.data[y][x];
-			index &= colors - 1;
+			index &= (1 << depth) - 1;
 
 			if(!gb->horizontal) {
 				byte = y * depth + x / 8 * png.height / 8 * 8 * depth;
