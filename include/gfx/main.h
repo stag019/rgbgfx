@@ -35,6 +35,7 @@ struct Options {
 	bool hardfix;
 	bool fix;
 	bool horizontal;
+	bool unique;
 	int trim;
 	char *mapfile;
 	bool mapout;
@@ -65,6 +66,11 @@ struct GBImage {
 	int size;
 	bool horizontal;
 	int trim;
+};
+
+struct Tilemap {
+	uint8_t *data;
+	int size;
 };
 
 int depth, colors;

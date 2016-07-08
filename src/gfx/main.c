@@ -18,8 +18,8 @@
 
 static void usage(void) {
 	printf(
-"Usage: rgbgfx [-v] [-F] [-f] [-h] [-d #] [-x #] [-t mapfile] [-T] [-p palfile]\n"
-"              [-P] [-o outfile] infile\n");
+"Usage: rgbgfx [-D] [-v] [-F] [-f] [-d #] [-h] [-x #] [-t mapfile] [-T]\n"
+"              [-u] [-p palfile] [-P] [-o outfile] infile\n");
 	exit(1);
 }
 
@@ -28,6 +28,7 @@ int main(int argc, char *argv[]) {
 	struct Options opts = {0};
 	struct PNGImage png = {0};
 	struct GBImage gb = {0};
+	struct Tilemap tilemap = {0};
 	char *ext;
 	const char *errmsg = "Warning: The PNG's %s setting is not the same as the setting defined on the command line.";
 
@@ -41,7 +42,7 @@ int main(int argc, char *argv[]) {
 
 	depth = 2;
 
-	while((ch = getopt(argc, argv, "DvFfd:hx:Tt:Pp:o:")) != -1) {
+	while((ch = getopt(argc, argv, "DvFfd:hx:Tt:uPp:o:")) != -1) {
 		switch(ch) {
 		case 'D':
 			opts.debug = true;
@@ -69,6 +70,9 @@ int main(int argc, char *argv[]) {
 		case 't':
 			opts.mapfile = optarg;
 			break;
+		case 'u':
+			opts.unique = true;
+			break;
 		case 'P':
 			opts.palout = true;
 			break;
@@ -92,9 +96,9 @@ int main(int argc, char *argv[]) {
 	opts.infile = argv[argc - 1];
 
 	if(depth != 1 && depth != 2) {
-		errx(EXIT_FAILURE, "Depth option must be other 1 or 2.");
+		errx(EXIT_FAILURE, "Depth option must be either 1 or 2.");
 	}
-	colors = (depth == 1 ? 2 : depth * depth);
+	colors = 1 << depth;
 
 	input_png_file(opts, &png);
 
@@ -156,7 +160,7 @@ int main(int argc, char *argv[]) {
 
 	if(!strequ(png.palfile, opts.palfile)) {
 		if(opts.verbose) {
-			warnx(errmsg, "pallette file");
+			warnx(errmsg, "palette file");
 		}
 		if(opts.hardfix) {
 			png.palfile = opts.palfile;
@@ -168,7 +172,7 @@ int main(int argc, char *argv[]) {
 
 	if(png.palout != opts.palout) {
 		if(opts.verbose) {
-			warnx(errmsg, "pallette file");
+			warnx(errmsg, "palette file");
 		}
 		if(opts.hardfix) {
 			png.palout = opts.palout;
@@ -211,13 +215,17 @@ int main(int argc, char *argv[]) {
 	gb.trim = opts.trim;
 	gb.horizontal = opts.horizontal;
 
-	if(*opts.outfile) {
+	if(*opts.outfile || *opts.mapfile) {
 		png_to_gb(png, &gb);
+		create_tilemap(opts, &gb, &tilemap);
+	}
+
+	if(*opts.outfile) {
 		output_file(opts, gb);
 	}
 
 	if(*opts.mapfile) {
-		output_tilemap_file(opts);
+		output_tilemap_file(opts, tilemap);
 	}
 
 	if(*opts.palfile) {

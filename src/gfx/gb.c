@@ -39,10 +39,9 @@ void png_to_gb(struct PNGImage png, struct GBImage *gb) {
 
 	for(y = 0; y < png.height; y++) {
 		for(x = 0; x < png.width; x++) {
-			index = png.data[y][x * depth / 8] >> (8 - depth - ((x % (8 / depth)) * depth)) & 3;
-			if(png.type == PNG_COLOR_TYPE_GRAY) {
-				index = colors - 1 - index;
-			}
+			index = png.data[y][x];
+			index &= (1 << depth) - 1;
+
 			if(!gb->horizontal) {
 				byte = y * depth + x / 8 * png.height / 8 * 8 * depth;
 			} else {
@@ -72,13 +71,91 @@ void output_file(struct Options opts, struct GBImage gb) {
 	fclose(f);
 }
 
-void output_tilemap_file(struct Options opts) {
+int get_tile_index(uint8_t *tile, uint8_t **tiles, int num_tiles, int tile_size) {
+	int i, j;
+	for (i = 0; i < num_tiles; i++) {
+		for (j = 0; j < tile_size; j++) {
+			if (tile[j] != tiles[i][j]) {
+				break;
+			}
+		}
+		if (j >= tile_size) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+void create_tilemap(struct Options opts, struct GBImage *gb, struct Tilemap *tilemap) {
+	int i, j;
+	int gb_i;
+	int tile_size;
+	int max_tiles;
+	int num_tiles;
+	int index;
+	int gb_size;
+	uint8_t *tile;
+	uint8_t **tiles;
+
+	tile_size = sizeof(uint8_t) * depth * 8;
+	gb_size = gb->size - (gb->trim * tile_size);
+	max_tiles = gb_size / tile_size;
+	tiles = malloc(sizeof(uint8_t*) * max_tiles);
+	num_tiles = 0;
+
+	tilemap->data = malloc(sizeof(uint8_t) * max_tiles);
+	tilemap->size = 0;
+
+	gb_i = 0;
+	while (gb_i < gb_size) {
+		tile = malloc(tile_size);
+		for (i = 0; i < tile_size; i++) {
+			tile[i] = gb->data[gb_i];
+			gb_i++;
+		}
+		if (opts.unique) {
+			index = get_tile_index(tile, tiles, num_tiles, tile_size);
+			if (index < 0) {
+				index = num_tiles;
+				tiles[num_tiles] = tile;
+				num_tiles++;
+			}
+		} else {
+			index = num_tiles;
+			tiles[num_tiles] = tile;
+			num_tiles++;
+		}
+		tilemap->data[tilemap->size] = index;
+		tilemap->size++;
+	}
+
+	if (opts.unique) {
+		free(gb->data);
+		gb->data = malloc(tile_size * num_tiles);
+		for (i = 0; i < num_tiles; i++) {
+			tile = tiles[i];
+			for (j = 0; j < tile_size; j++) {
+				gb->data[i * tile_size + j] = tile[j];
+			}
+		}
+		gb->size = i * tile_size;
+	}
+
+	for (i = 0; i < num_tiles; i++) {
+		free(tiles[i]);
+	}
+	free(tiles);
+}
+
+void output_tilemap_file(struct Options opts, struct Tilemap tilemap) {
 	FILE *f;
 
 	f = fopen(opts.mapfile, "wb");
 	if(!f) {
 		err(EXIT_FAILURE, "Opening tilemap file '%s' failed", opts.mapfile);
 	}
+
+	fwrite(tilemap.data, 1, tilemap.size, f);
 	fclose(f);
 
 	if(opts.mapout) {

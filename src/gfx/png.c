@@ -60,15 +60,20 @@ void input_png_file(struct Options opts, struct PNGImage *img) {
 
 	if(img->depth != depth) {
 		if(opts.verbose) {
-			warnx("Image bit depth is not %i.", depth);
+			warnx("Image bit depth is not %i (is %i).", depth, img->depth);
 		}
+	}
 
+	if (true) {
 		if(img->type == PNG_COLOR_TYPE_GRAY) {
 			if(img->depth < 8) {
-				png_set_gray_1_2_4_to_8(img->png);
+				png_set_expand_gray_1_2_4_to_8(img->png);
 			}
 			png_set_gray_to_rgb(img->png);
 		} else {
+			if(img->depth < 8) {
+				png_set_expand_gray_1_2_4_to_8(img->png);
+			}
 			has_palette = png_get_PLTE(img->png, img->info, &palette, &colors);
 		}
 
@@ -143,7 +148,7 @@ void input_png_file(struct Options opts, struct PNGImage *img) {
 		}
 
 		/* Also unfortunately, this sets it at 8 bit, and I cant find any option to reduce to 2 or 1 bit. */
-		png_set_dither(img->png, palette, colors, colors, NULL, 1);
+		png_set_quantize(img->png, palette, colors, colors, NULL, 1);
 
 		if(!has_palette) {
 			png_set_PLTE(img->png, img->info, palette, colors);
@@ -202,7 +207,7 @@ void get_text(struct PNGImage *png) {
 		text[i].text = text[i + numremoved].text;
 		text[i].compression = text[i + numremoved].compression;
 	}
-	png->info->num_text -= numremoved;
+	png_set_text(png->png, png->info, text, numtxts - numremoved);
 }
 
 void set_text(struct PNGImage *png) {
